@@ -66,11 +66,19 @@ module.exports = async (req, res) => {
       const titleProp = getProp(props, (p) => p.type === 'title');
       const nombre = titleProp ? plainText(titleProp.title) : 'Sin título';
 
-      const imageProp =
-        getProp(props, (p, name) => p.type === 'url' && /imagen|link|image|canva|foto/i.test(name)) ||
-        getProp(props, (p) => p.type === 'files') ||
-        getProp(props, (p) => p.type === 'url');
-      const imagen = extractImage(imageProp);
+      // Probamos varias propiedades candidatas en orden, y usamos la primera que
+      // realmente tenga una imagen cargada (así si "Link de imagen" está vacío o
+      // roto, cae al archivo subido directo a Notion, o a cualquier otra URL).
+      const imageCandidates = [
+        getProp(props, (p, name) => p.type === 'url' && /imagen|link|image|canva|foto/i.test(name)),
+        getProp(props, (p) => p.type === 'files'),
+        getProp(props, (p) => p.type === 'url')
+      ].filter(Boolean);
+      let imagen = '';
+      for (const cand of imageCandidates) {
+        const val = extractImage(cand);
+        if (val) { imagen = val; break; }
+      }
 
       const dateProp = getProp(props, (p) => p.type === 'date');
       const fecha = dateProp && dateProp.date ? dateProp.date.start : null;
