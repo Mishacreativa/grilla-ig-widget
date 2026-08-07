@@ -1,0 +1,9 @@
+{
+  "name": "grilla-ig-widget",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Widget de grilla de Instagram anclado a una base de datos de Notion, para insertar como /embed en Notion.",
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}
