@@ -79,6 +79,7 @@ module.exports = async (req, res) => {
         const val = extractImage(cand);
         if (val) { imagen = val; break; }
       }
+      const esVideo = /\.(mp4|mov|m4v|webm)(\?.*)?$/i.test(imagen);
 
       const dateProp = getProp(props, (p) => p.type === 'date');
       const fecha = dateProp && dateProp.date ? dateProp.date.start : null;
@@ -109,7 +110,7 @@ module.exports = async (req, res) => {
         getProp(props, (p) => p.type === 'rich_text');
       const copy = copyProp ? plainText(copyProp.rich_text) : '';
 
-      return { id: page.id, url: page.url, nombre, imagen, fecha, formato, pilar, estado, fijado, copy };
+      return { id: page.id, url: page.url, nombre, imagen, esVideo, fecha, formato, pilar, estado, fijado, copy };
     });
 
     res.setHeader('Cache-Control', 'no-store');
