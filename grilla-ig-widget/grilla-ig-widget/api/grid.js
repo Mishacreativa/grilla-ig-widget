@@ -81,7 +81,11 @@ module.exports = async (req, res) => {
       }
       const esVideo = /\.(mp4|mov|m4v|webm)(\?.*)?$/i.test(imagen);
 
-      const dateProp = getProp(props, (p) => p.type === 'date');
+      // si hay varias propiedades de fecha (ej. "Fecha de inicio" y "Fecha de
+      // publicación"), preferimos la de publicación para ordenar la grilla.
+      const dateProp =
+        getProp(props, (p, name) => p.type === 'date' && /public/i.test(name)) ||
+        getProp(props, (p) => p.type === 'date');
       const fecha = dateProp && dateProp.date ? dateProp.date.start : null;
 
       const formatoProp = getProp(props, (p, name) => (p.type === 'select' || p.type === 'multi_select') && /formato|format/i.test(name));
